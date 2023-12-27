@@ -14,10 +14,10 @@ repository:
 schema:
   file: ./prisma/schema.prisma
 
-network:
-  chainId: euphoria
-  endpoint: https://indexer-v2.dev.aurascan.io/api/v2/graphql
-  dictionary: ""
+# network:
+#   chainId: aura-testnet
+#   endpoint: https://indexer-v2.dev.aurascan.io/api/v2/graphql
+#   dictionary: ""
 dataSources:
   - kind: aura/Horoscope
     startBlock: 1407719 # first block on the fourth iteration of juno
@@ -38,9 +38,15 @@ dataSources:
         - handler: handleMessages
           type: message
           filter:
+            - type: "/aura.smartaccount.v1beta1.MsgActivateAccount" 
+            - type: "/aura.smartaccount.v1beta1.MsgRecover" 
             - type: "/cosmwasm.wasm.v1.MsgExecuteContract" 
-              contract: "aura1fgfnuru6krewgt9zzu7nzercz007928uzrw2t2tl6hl3ec50me2q3ankr2" 
-              contractCall: "execute_swap_operations" 
+            # TO DO: Config plugin contract address
+            #   contract: "aura1fgfnuru6krewgt9zzu7nzercz007928uzrw2t2tl6hl3ec50me2q3ankr2" 
+              contractCall: "register_plugin" 
+            # - type: "/cosmwasm.wasm.v1.MsgExecuteContract" 
+            #   contract: "aura1fgfnuru6krewgt9zzu7nzercz007928uzrw2t2tl6hl3ec50me2q3ankr2" 
+            #   contractCall: "register_plugin" 
             # - type: /cosmos.staking.v1beta1.MsgDelegate #(string | null) Filter message that has special type.
           #     contractCall: burn #(string | null) The name of the contract function that was called.
           #     values: # A set of key/value pairs that are present in the message data.

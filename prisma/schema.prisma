@@ -1,69 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-  // output   = "../src/generated/client"
+model address_book {
+  id         Int       @id @default(autoincrement())
+  address    String    @db.VarChar
+  name       String
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  device_id  String?   @db.VarChar
 }
 
-// generator typegraphql {
-//   provider = "typegraphql-prisma"
-//   output   = "../node_modules/@generated/typegraphql-prisma"
-// }
-
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model block {
+  name            String @id @db.VarChar
+  processed_block Int?
 }
 
-model Block {
+model device {
   id         Int      @id @default(autoincrement())
-  height     Int
-  time       DateTime
-  hash       String
-  num_txs    Int
-  proposer   String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+  pubkey     String   @db.VarChar
+  device_id  String   @db.VarChar
 }
 
-model Transaction {
+model normal_wallet {
   id         Int      @id @default(autoincrement())
-  height     Int
-  hash       String
-  from       String
-  to         String
-  time       DateTime
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+  name       String   @db.VarChar
+  address    String   @unique @db.VarChar
 }
 
-model Event {
+model notifications {
   id         Int      @id @default(autoincrement())
-  height     Int
-  tx_hash    String
-  type       String
-  source    String
-  attributes String
-  time       DateTime
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+  user_id    Int
+  message    String
+  timestamp  DateTime @db.Timestamptz(6)
 }
 
-model Message {
-  id         Int      @id @default(autoincrement())
-  height     Int
-  tx_hash    String
-  type       String
-  sender     String
-  content    String
-  index      Int
-  time       DateTime
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+model plugin_managers {
+  id           Int      @id @default(autoincrement())
+  created_at   DateTime @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime @default(now()) @db.Timestamptz(6)
+  manager_name String   @db.VarChar
+}
+
+model plugins {
+  id               Int      @id @default(autoincrement())
+  created_at       DateTime @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime @default(now()) @db.Timestamptz(6)
+  name             String   @db.VarChar
+  description      String
+  version          String   @db.VarChar
+  contract_address String   @db.VarChar
+  admin_address    String   @db.VarChar
+}
+
+model plugins_registration {
+  id              Int      @id @default(autoincrement())
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime @default(now()) @db.Timestamptz(6)
+  smart_wallet_id Int
+  plugin_id       Int
+}
+
+model recovery_account {
+  id             Int      @id @default(autoincrement())
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime @default(now()) @db.Timestamptz(6)
+  name           String?  @db.VarChar
+  wallet_address String   @db.VarChar
+  recover_wallet String?  @db.VarChar
+}
+
+model smart_wallet {
+  id            Int      @id @default(autoincrement())
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+  name          String?  @db.VarChar
+  address       String   @unique @db.VarChar
+  contract_info Json
+  pubkey        String?  @db.VarChar
 }
 
 model BlockCheckpoint {
@@ -72,11 +97,4 @@ model BlockCheckpoint {
   job_name   String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-}
-
-model Account {
-  id         Int      @id @default(autoincrement())
-  address    String
-  amount     BigInt
-  time       DateTime
 }

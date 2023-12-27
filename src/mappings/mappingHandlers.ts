@@ -3,64 +3,62 @@ import { IBlockResponse } from '../types/horoscope-response/block_response';
 import { ITransactionResponse } from '../types/horoscope-response/transaction_response';
 import { IMessageResponse } from '../types/horoscope-response/message_response';
 import { IEventResponse } from '../types/horoscope-response/event_response';
+import { MESSAGE_TYPE } from '../shared/constants/common';
 
 const prisma = new PrismaClient();
 
 export async function handleBlocks(
   blockData: IBlockResponse,
   trx: any,
-): Promise<void> {}
+): Promise<void> { }
 
 export async function handleTransactions(
   txDatas: ITransactionResponse,
   trx: any,
-): Promise<void> {}
+): Promise<void> { }
 
 export async function handleMessages(
   msg: IMessageResponse,
   trx: any,
 ): Promise<void> {
   console.log('catched message:');
-  // console.log(JSON.stringify(msg));
+  console.log(msg);
+  if (msg.transaction?.code != 0) {
+    return;
+  }
 
-  const sender = msg.sender;
-  const funds: any[] = msg.content.funds;
-  let time = new Date();
-  if (msg.block?.time) {
-    time = new Date(msg.block?.time);
+  switch (msg.type) {
+    case MESSAGE_TYPE.MSG_ACTIVE_ACCOUNT: {
+      const sender = msg.sender;
+      const pubkey = msg.content.public_key.value;
+      const contract_info = JSON.stringify(msg.content);
+      const resultInsert = await prisma.smart_wallet.create({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        data: { address: sender, pubkey, contract_info },
+      });
+      console.log('result insert: ', resultInsert.id);
+    }
+    case MESSAGE_TYPE.MSG_EXECUTE_CONTRACT: {
+      const exeMsg = JSON.parse(msg.content.msg);
+      //TO DO: Check type register plugin. exeMsg.register_plugin.plugin_address
+      
+      const configMsg = JSON.parse(exeMsg.register_plugin.config);
+      const wallet_address = configMsg.smart_account_address;
+      const recover_wallet = configMsg.recover_address;
+
+      const resultInsert = await prisma.recovery_account.create({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        data: { wallet_address, recover_wallet },
+      });
+      console.log('result insert: ', resultInsert.id);
+    }
   }
-  time.setHours(0, 0, 0, 0);
-  const amountAura = funds.find((x: any) => x.denom === 'uaura').amount;
-  const accountInDB = await prisma.account.findFirst({
-    where: {
-      address: sender,
-      time: {
-        equals: time,
-      },
-    },
-  });
-  if (!accountInDB) {
-    const resultInsert = await prisma.account.create({
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      data: { address: sender, amount: amountAura, time: time },
-    });
-    console.log('result insert: ', resultInsert.id);
-  } else {
-    accountInDB.amount = BigInt(accountInDB.amount) + BigInt(amountAura);
-    const resultUpdate = await prisma.account.update({
-      where: {
-        id: accountInDB.id,
-      },
-      data: {
-        amount: accountInDB.amount,
-      },
-    });
-    console.log('result update: ', resultUpdate.id);
-  }
+
 }
 
 export async function handleEvents(
   event: IEventResponse,
   trx: any,
-): Promise<void> {}
+): Promise<void> { }
