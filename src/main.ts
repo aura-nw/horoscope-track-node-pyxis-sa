@@ -33,7 +33,8 @@ const main = async () => {
     const endTime = new Date();
 
     console.log(`Time run: ${endTime.getTime() - startTime.getTime()}`);
-  });
+  },
+    { connection: bullableService.getRedisConnection() });
 
   console.log('Worker started!');
 
