@@ -22,7 +22,7 @@ export class ServiceUtil {
           response.data.errors,
           `Error while querying from graphql! ${JSON.stringify(response.data)}`,
         );
-        return null;
+        return false;
       }
 
       return response.data;

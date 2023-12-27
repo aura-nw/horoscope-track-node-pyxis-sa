@@ -111,6 +111,8 @@ export class DataHandleService {
       config.indexerV2.api,
       'POST',
     );
+    
+    if (!responseBlocks) return;
 
     const wrappedBlock = responseBlocks.map((block) => {
       return this.wrapBlock(block);
