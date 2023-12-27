@@ -1,4 +1,4 @@
-# Track node
+# Track node.
 Horoscope track node is a node that crawling, stores and manages your data from Horoscope-v2.
 
 Main components:
