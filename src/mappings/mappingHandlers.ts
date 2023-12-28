@@ -38,11 +38,12 @@ export async function handleMessages(
         data: { address: sender, pubkey, contract_info },
       });
       console.log('result insert: ', resultInsert.id);
+      break;
     }
     case MESSAGE_TYPE.MSG_EXECUTE_CONTRACT: {
       const exeMsg = JSON.parse(msg.content.msg);
       //TO DO: Check type register plugin. exeMsg.register_plugin.plugin_address
-      
+
       const configMsg = JSON.parse(exeMsg.register_plugin.config);
       const wallet_address = configMsg.smart_account_address;
       const recover_wallet = configMsg.recover_address;
@@ -53,6 +54,10 @@ export async function handleMessages(
         data: { wallet_address, recover_wallet },
       });
       console.log('result insert: ', resultInsert.id);
+      break;
+    }
+    default: { 
+      console.log('default');
     }
   }
 
