@@ -39,11 +39,15 @@ dataSources:
           type: message
           filter:
             - type: "/aura.smartaccount.v1beta1.MsgActivateAccount" 
-            - type: "/aura.smartaccount.v1beta1.MsgRecover" 
+            # - type: "/aura.smartaccount.v1beta1.MsgRecover" 
             - type: "/cosmwasm.wasm.v1.MsgExecuteContract" 
             # TO DO: Config plugin contract address
             #   contract: "aura1fgfnuru6krewgt9zzu7nzercz007928uzrw2t2tl6hl3ec50me2q3ankr2" 
               contractCall: "register_plugin" 
+            - type: "/cosmwasm.wasm.v1.MsgExecuteContract" 
+            # TO DO: Config plugin contract address
+            #   contract: "aura1fgfnuru6krewgt9zzu7nzercz007928uzrw2t2tl6hl3ec50me2q3ankr2" 
+              contractCall: "allow_plugin" 
             # - type: "/cosmwasm.wasm.v1.MsgExecuteContract" 
             #   contract: "aura1fgfnuru6krewgt9zzu7nzercz007928uzrw2t2tl6hl3ec50me2q3ankr2" 
             #   contractCall: "register_plugin" 
