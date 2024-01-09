@@ -54,22 +54,23 @@ model plugin_managers {
 }
 
 model plugins {
-  id               Int      @id @default(autoincrement())
-  created_at       DateTime @default(now()) @db.Timestamptz(6)
-  updated_at       DateTime @default(now()) @db.Timestamptz(6)
-  name             String   @db.VarChar
-  description      String
-  version          String   @db.VarChar
-  contract_address String   @db.VarChar
-  admin_address    String   @db.VarChar
+  id          Int      @id @default(autoincrement())
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime @default(now()) @db.Timestamptz(6)
+  name        String   @db.VarChar
+  plugin_type String   @db.VarChar
+  version     String   @db.VarChar
+  address     String   @db.VarChar
+  code_id     Int
+  enabled     Boolean
 }
 
 model plugins_registration {
-  id              Int      @id @default(autoincrement())
-  created_at      DateTime @default(now()) @db.Timestamptz(6)
-  updated_at      DateTime @default(now()) @db.Timestamptz(6)
-  smart_wallet_id Int
-  plugin_id       Int
+  id                    Int      @id @default(autoincrement())
+  created_at            DateTime @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime @default(now()) @db.Timestamptz(6)
+  smart_account_address String   @db.VarChar
+  plugin_address        String   @db.VarChar
 }
 
 model recovery_account {
@@ -93,8 +94,17 @@ model smart_wallet {
 
 model BlockCheckpoint {
   id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz(6)
   height     Int
-  job_name   String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  job_name   String   @db.VarChar
+}
+
+model fee_grant {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+  granter    String   @db.VarChar
+  grantee    String   @db.VarChar
+  device_id  String   @db.VarChar
 }

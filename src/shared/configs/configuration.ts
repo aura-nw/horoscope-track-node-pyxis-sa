@@ -24,6 +24,11 @@ export default () => ({
     attempts: Number(process.env.ATTEMPTS) || 3,
     repeat: Number(process.env.REPEAT) || 5000,
   },
+
+  network: {
+    rpcUrl: `${process.env.RPC_URL}`,
+    pluginManagerAddress: `${process.env.PLUGIN_MANAGER_ADDRESS}`,
+  },
 });
 
 export const HandleConfigMap = {
